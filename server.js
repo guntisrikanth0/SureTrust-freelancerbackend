@@ -70,6 +70,6 @@ const server = http.createServer(app);
 // Pass the allowedOrigins to the socket initializer
 initSocket(server, allowedOrigins);
 
-server.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
