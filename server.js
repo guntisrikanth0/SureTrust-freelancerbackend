@@ -27,7 +27,7 @@ const PORT = process.env.PORT || 5000;
 
 // Define your allowed origins for both CORS and Socket.IO
 const allowedOrigins = [
-  'http://51.20.85.41', 'http://localhost:5173','https://suretrust-freelancerbackend.onrender.com',// Your EC2 Public IP
+  'http://51.20.85.41', 'http://localhost:5173','https://suretrust-freelancerfrontend.onrender.com',// Your EC2 Public IP
   // You can add your domain name here later if you get one
   // 'http://www.yourdomain.com'
 ];
