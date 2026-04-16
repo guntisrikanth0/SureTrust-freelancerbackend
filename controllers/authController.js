@@ -30,17 +30,18 @@ export const signup = async (req, res) => {
 
     await user.save();
 
-    await sendEmail({
+    // --- FIX: Remove 'await' and add .catch to prevent timeouts/crashes ---
+    sendEmail({
       to: user.email,
       subject: 'Verify Your Email Address',
       html: `<p>Your OTP for signup is: <strong>${otp}</strong>. It is valid for 10 minutes.</p>`,
-    });
+    }).catch(err => console.error("BACKGROUND EMAIL ERROR (Signup):", err.message));
 
     return res.status(201).json({
       msg: 'User registered. Please check your email for the OTP.',
     });
   } catch (err) {
-    console.error(err.message);
+    console.error("Signup Controller Error:", err.message);
     return res.status(500).send('Server Error');
   }
 };
@@ -62,7 +63,6 @@ export const verifyOtpAndLogin = async (req, res) => {
     user.otpExpires = undefined;
     await user.save();
 
-    // --- FIX: Added role, name, and email to JWT payload ---
     const payload = { 
       user: { 
         id: user.id,
@@ -108,7 +108,6 @@ export const login = async (req, res) => {
       });
     }
     
-    // --- FIX: Added role, name, and email to JWT payload ---
     const payload = { 
       user: { 
         id: user.id,
@@ -148,11 +147,12 @@ export const forgotPassword = async (req, res) => {
     user.otpExpires = Date.now() + 10 * 60 * 1000;
     await user.save();
 
-    await sendEmail({
+    // --- FIX: Remove 'await' and add .catch to prevent timeouts/crashes ---
+    sendEmail({
       to: user.email,
       subject: 'Password Reset Request',
       html: `<p>Your OTP for password reset is: <strong>${otp}</strong>. It is valid for 10 minutes.</p>`,
-    });
+    }).catch(err => console.error("BACKGROUND EMAIL ERROR (Forgot Password):", err.message));
 
     return res.json({ msg: 'OTP sent to your email.' });
   } catch (err) {
