@@ -9,6 +9,9 @@ export const initSocket = (server, allowedOrigins = "*") => {
       methods: ["GET", "POST"],
       credentials: true,
     },
+    // ✅ FIX: Added transports to match frontend
+    transports: ["polling", "websocket"],
+    allowEIO3: true
   });
 
   io.on("connection", (socket) => {
@@ -38,32 +41,8 @@ export const initSocket = (server, allowedOrigins = "*") => {
       }
     });
 
-    // Leave a project room
-    socket.on("leaveProject", ({ projectId }) => {
-      try {
-        if (!projectId) return;
-        const room = `project_${projectId}`;
-        socket.leave(room);
-        console.log(`Socket ${socket.id} left room ${room}`);
-      } catch (e) {
-        console.error("leaveProject error", e);
-      }
-    });
-
-    // Leave a user room
-    socket.on("leaveUser", ({ userId }) => {
-      try {
-        if (!userId) return;
-        const room = `user_${userId}`;
-        socket.leave(room);
-        console.log(`Socket ${socket.id} left user room ${room}`);
-      } catch (e) {
-        console.error("leaveUser error", e);
-      }
-    });
-
-    socket.on("disconnect", () => {
-      console.log("❌ Socket disconnected:", socket.id);
+    socket.on("disconnect", (reason) => {
+      console.log(`❌ Socket disconnected (${reason}):`, socket.id);
     });
   });
 
